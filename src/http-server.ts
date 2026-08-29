@@ -74,6 +74,19 @@ if (!Number.isFinite(sessionIdleTimeoutMs) || sessionIdleTimeoutMs < 1000) {
 const app = express();
 const sessions = new Map<string, SessionContext>();
 
+//temporary logging middleware for debugging
+app.use((req, _res, next) => {
+  console.log(`[MCP REQUEST] ${req.method} ${req.originalUrl}`);
+  console.log(`[MCP HEADERS]`, {
+    origin: req.headers.origin,
+    accept: req.headers.accept,
+    contentType: req.headers['content-type'],
+    authorization: req.headers.authorization ? 'PRESENT' : 'NONE',
+    sessionId: req.headers['mcp-session-id'] || 'NONE',
+  });
+  next();
+});
+
 app.disable('x-powered-by');
 app.use(express.json({ limit: '4mb' }));
 app.use(cors({
