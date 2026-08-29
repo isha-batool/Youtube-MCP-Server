@@ -88,7 +88,13 @@ app.use((req, _res, next) => {
 });
 
 app.disable('x-powered-by');
-app.use(express.json({ limit: '4mb' }));
+//app.use(express.json({ limit: '4mb' }));
+app.use(express.json({
+  limit: '4mb',
+  verify: (_req, _res, buf) => {
+    console.log('[RAW BODY]', buf.toString('utf8'));
+  }
+}));
 app.use(cors({
   origin(origin, callback) {
     callback(null, !origin || allowedCorsOrigins.has(origin));
